@@ -1,0 +1,14 @@
+
+code/__pycache__/barycentricCorrection.cpython-39.pyc
+code/__pycache__/keplerDiffImage.cpython-39.pyc
+code/__pycache__/tessDiffImage.cpython-39.pyc
+code/__pycache__/tessprfmodel.cpython-39.pyc
+code/__pycache__/transitCentroids.cpython-39.pyc
+examples/.ipynb_checkpoints/example_tess_centroids-checkpoint.ipynb
+examples/.ipynb_checkpoints/example_tess_centroids_simple-checkpoint.ipynb
+examples/.ipynb_checkpoints/example_tess_centroids_simple_pix2ra-checkpoint.ipynb
+examples/.ipynb_checkpoints/example_tess_diffimages-checkpoint.ipynb
+examples/tic25375553/imageData_TOI_143.01_sector1.pickle
+examples/tic25375553/imageData_TOI_143.01_sector28.pickle
+examples/tic25375553/ticKey_tic25375553.txt
+.DS_Store
