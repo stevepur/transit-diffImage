@@ -70,10 +70,10 @@ class tessDiffImage:
         # check to see if the sector pixel files already exist
         sectorList = []
         if thisPlanet is not None:
-            toiStr = str(self.ticData["planetData"][thisPlanet]["TOI"])
+            planetStr = self.ticData["planetData"][thisPlanet]["planetID"]
         else:
-            toiStr = "*"
-        ff = glob.glob(self.outputDir + self.ticName + "/imageData_TOI_" + toiStr + "_sector*.pickle")
+            planetStr = "*"
+        ff = glob.glob(self.outputDir + self.ticName + "/imageData_" + planetStr + "_sector*.pickle")
         if len(ff) > 0:
             for f in ff:
                 sectorList.append(scanf("sector%d.pickle", f.split("/")[2].split("_")[3])[0])
@@ -149,13 +149,13 @@ class tessDiffImage:
             if thisPlanet is None:
                 for p, planetData in enumerate(self.ticData["planetData"]):
                     planetData["planetIndex"] = p
-                    planetData["planetID"] = p
+                    planetData["planetIndex"] = p
                     self.make_planet_difference_image(self.ticData, planetData, pixelData, catalogData,
                             allowedBadCadences = allowedBadCadences, drawImages = drawImages)
             else:
                 planetData = self.ticData["planetData"][thisPlanet]
                 planetData["planetIndex"] = thisPlanet
-                planetData["planetID"] = thisPlanet
+                planetData["planetIndex"] = thisPlanet
                 print("making difference image for sector " + str(pixelData["sector"]))
                 self.make_planet_difference_image(planetData, pixelData, catalogData, allowedBadCadences = allowedBadCadences, drawImages = drawImages)
             self.sectorList.append(pixelData["sector"])
@@ -199,7 +199,7 @@ class tessDiffImage:
                 self.draw_difference_image(diffImageData, pixelData, planetData, catalogData)
                 self.draw_lc_transits(pixelData, planetData, inTransitIndices, outTransitIndices, transitIndex)
 
-        f = open(self.outputDir + self.ticName + "/imageData_TOI_" + str(planetData["TOI"]) + "_sector" + str(pixelData["sector"]) + ".pickle", 'wb')
+        f = open(self.outputDir + self.ticName + "/imageData_" + planetData["planetID"] + "_sector" + str(pixelData["sector"]) + ".pickle", 'wb')
         pickle.dump([diffImageData, catalogData, pixelData, inTransitIndices, outTransitIndices, transitIndex, planetData], f, pickle.HIGHEST_PROTOCOL)
         f.close()
 
@@ -645,37 +645,37 @@ class tessDiffImage:
         fig, ax = plt.subplots(figsize=(12,10))
         self.draw_pix_catalog(diffImageData["diffImage"], catalogData, extent=catalogData["extent"], ax=ax, dMagThreshold = dMagThreshold)
         plt.title("diff image" + alertText, color=alertColor);
-        plt.savefig(self.outputDir + self.ticName + "/diffImage_planet" + str(planetData["planetID"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
+        plt.savefig(self.outputDir + self.ticName + "/diffImage_planet" + str(planetData["planetIndex"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
 
         fig, ax = plt.subplots(figsize=(12,10))
         self.draw_pix_catalog(diffImageData["diffImage"], catalogData, extent=catalogData["extentClose"], ax=ax, close=True)
         plt.title("diff image close" + alertText, color=alertColor);
-        plt.savefig(self.outputDir + self.ticName + "/diffImageClose_planet" + str(planetData["planetID"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
+        plt.savefig(self.outputDir + self.ticName + "/diffImageClose_planet" + str(planetData["planetIndex"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
 
         fig, ax = plt.subplots(figsize=(12,10))
         self.draw_pix_catalog(diffImageData["diffSNRImage"], catalogData, extent=catalogData["extent"], ax=ax, dMagThreshold = dMagThreshold)
         plt.title("SNR diff image" + alertText, color=alertColor);
-        plt.savefig(self.outputDir + self.ticName + "/diffImageSNR_planet" + str(planetData["planetID"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
+        plt.savefig(self.outputDir + self.ticName + "/diffImageSNR_planet" + str(planetData["planetIndex"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
 
         fig, ax = plt.subplots(figsize=(12,10))
         self.draw_pix_catalog(diffImageData["diffSNRImage"], catalogData, extent=catalogData["extentClose"], ax=ax, close=True)
         plt.title("SNR diff image close" + alertText, color=alertColor);
-        plt.savefig(self.outputDir + self.ticName + "/diffImageSNRClose_planet" + str(planetData["planetID"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
+        plt.savefig(self.outputDir + self.ticName + "/diffImageSNRClose_planet" + str(planetData["planetIndex"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
         
         fig, ax = plt.subplots(figsize=(12,10))
         self.draw_pix_catalog(diffImageData["meanOutTransit"], catalogData, extent=catalogData["extent"], ax=ax, magColorBar=True, dMagThreshold = dMagThreshold)
         plt.title("Direct image");
-        plt.savefig(self.outputDir + self.ticName + "/directImage_planet" + str(planetData["planetID"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
+        plt.savefig(self.outputDir + self.ticName + "/directImage_planet" + str(planetData["planetIndex"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
 
         fig, ax = plt.subplots(figsize=(12,10))
         self.draw_pix_catalog(diffImageData["meanOutTransit"], catalogData, extent=catalogData["extent"], ax=ax, annotate=True, magColorBar=True, dMagThreshold = dMagThreshold)
         plt.title("Direct image");
-        plt.savefig(self.outputDir + self.ticName + "/directImageAnnotated_planet" + str(planetData["planetID"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
+        plt.savefig(self.outputDir + self.ticName + "/directImageAnnotated_planet" + str(planetData["planetIndex"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
 
         fig, ax = plt.subplots(figsize=(12,10))
         self.draw_pix_catalog(diffImageData["meanOutTransit"], catalogData, extent=catalogData["extentClose"], ax=ax, close=True)
         plt.title("Direct image close");
-        plt.savefig(self.outputDir + self.ticName + "/directImageClose_planet" + str(planetData["planetID"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
+        plt.savefig(self.outputDir + self.ticName + "/directImageClose_planet" + str(planetData["planetIndex"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
 
     def draw_lc_transits(self, pixelData, planetData, inTransitIndices, outTransitIndices, transitIndex, apCenter = [10,10], saveFigure=True):
     #    apFlux = pixelData["flux"][:,8:13,8:13]
@@ -693,5 +693,5 @@ class tessDiffImage:
         plt.ylabel("flux (e-/sec)");
         
         if saveFigure:
-            plt.savefig(self.outputDir + self.ticName + "/lcTransits_planet" + str(planetData["planetID"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
+            plt.savefig(self.outputDir + self.ticName + "/lcTransits_planet" + str(planetData["planetIndex"]) + "_sector" + str(pixelData["sector"]) + "_camera" + str(pixelData["camera"]) + ".pdf",bbox_inches='tight')
 
