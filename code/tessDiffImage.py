@@ -101,7 +101,9 @@ class tessDiffImage:
         ff = glob.glob(os.path.join(self.outputDir, self.ticName, "imageData_" + planetStr + "_sector" + sectorStr + ".pickle"))
         if len(ff) > 0:
             for f in ff:
-                sectorList.append(scanf("sector%d.pickle", f.split("/")[2].split("_")[3])[0])
+                sector = scanf("sector%d.pickle", os.path.basename(f).split("_")[-1])[0]
+                print("Found existing sector " + str(sector) + " file at " + f)
+                sectorList.append(sector)
         if len(sectorList) > 0:
             self.sectorList = sectorList
             return
