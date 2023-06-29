@@ -224,7 +224,7 @@ class tessPRF(object):
 
         if self.sector < 4:
             prfSector = 1
-            if ((self.camera <= 2) & (self.ccd < 4)):
+            if ((self.camera == 1) | ((self.camera == 2) & (self.ccd < 4))):
                 prfName = "tess2018243163600-prf-" + str(self.camera)+ "-"  + str(self.ccd)
             else:
                 prfName = "tess2018243163601-prf-" + str(self.camera)+ "-"  + str(self.ccd)
