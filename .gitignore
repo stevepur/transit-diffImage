@@ -18,3 +18,5 @@ transitDiffImage/__pycache__/keplerDiffImage.cpython-39.pyc
 transitDiffImage/__pycache__/tessDiffImage.cpython-39.pyc
 transitDiffImage/__pycache__/tessprfmodel.cpython-39.pyc
 transitDiffImage/__pycache__/transitCentroids.cpython-39.pyc
+build
+transit_diffimage.egg-info
