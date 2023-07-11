@@ -1,4 +1,4 @@
-tess_stars2px
+tess-point
 astropy
 astroquery
 scipy
