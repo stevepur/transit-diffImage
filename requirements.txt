@@ -1,0 +1,5 @@
+tess_stars2px
+astropy
+astroquery
+scipy
+scanf

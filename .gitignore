@@ -12,3 +12,9 @@ examples/tic25375553/imageData_TOI_143.01_sector1.pickle
 examples/tic25375553/imageData_TOI_143.01_sector28.pickle
 examples/tic25375553/ticKey_tic25375553.txt
 .DS_Store
+transitDiffImage/__pycache__/__init__.cpython-39.pyc
+transitDiffImage/__pycache__/barycentricCorrection.cpython-39.pyc
+transitDiffImage/__pycache__/keplerDiffImage.cpython-39.pyc
+transitDiffImage/__pycache__/tessDiffImage.cpython-39.pyc
+transitDiffImage/__pycache__/tessprfmodel.cpython-39.pyc
+transitDiffImage/__pycache__/transitCentroids.cpython-39.pyc

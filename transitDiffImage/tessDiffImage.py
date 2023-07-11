@@ -17,7 +17,9 @@ import pickle
 from scanf import scanf
 
 import tess_stars2px as trdp
-import barycentricCorrection as bc
+import transitDiffImage.barycentricCorrection as bc
+
+_spiceFileLocation = os.path.join(os.path.dirname(__file__), "data")
 
 flux12 = 3.6e8/(30*60)
 
@@ -59,7 +61,6 @@ def pix_to_ra_dec(sector, cam, ccd, col, row):
 class tessDiffImage:
     def __init__(self,
             ticData,
-            spiceFileLocation = ".",
             nPixOnSide = 21,
             dMagThreshold = 4,
             allowedBadCadences = 0,
@@ -70,7 +71,6 @@ class tessDiffImage:
             qlpFlagsLocation = None):
             
         self.ticData = ticData
-        self.spiceFileLocation = spiceFileLocation
         self.nPixOnSide = nPixOnSide
         self.dMagThreshold = dMagThreshold
         self.allowedBadCadences = allowedBadCadences
@@ -83,7 +83,7 @@ class tessDiffImage:
         self.qlpFlagsLocation = qlpFlagsLocation
 
 
-        self.baryCorrector = bc.barycentricCorrection(self.spiceFileLocation)
+        self.baryCorrector = bc.barycentricCorrection(_spiceFileLocation)
 
 
     def make_ffi_difference_image(self, thisPlanet=None, allowedBadCadences = None, drawImages = False):
