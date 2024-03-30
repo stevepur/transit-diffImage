@@ -65,7 +65,7 @@ class tessDiffImage:
             dMagThreshold = 4,
             allowedBadCadences = 0,
             allowedInTransitLossFraction = 0.8,
-            maxOrbits = 116,
+            maxOrbits = 148,
             cleanFiles = True,
             outputDir = "./",
             qlpFlagsLocation = None):
@@ -230,11 +230,11 @@ class tessDiffImage:
             zipStr = os.path.join(self.outputDir, ticName + "_s" + str(sector) + '.zip')
         if not os.path.exists(zipStr):
             if sector is None:
-                curlStr = 'curl "https://mast.stsci.edu/tesscut/api/v0.1/astrocut?ra=' \
+                curlStr = 'curl -JL "https://mast.stsci.edu/tesscut/api/v0.1/astrocut?ra=' \
                             + str(ra) + '&dec=' + str(dec) + '&y=' + str(self.nPixOnSide) + '&x=' + str(self.nPixOnSide) \
                             + '" --output ' + zipStr
             else:
-                curlStr = 'curl "https://mast.stsci.edu/tesscut/api/v0.1/astrocut?ra=' \
+                curlStr = 'curl -JL "https://mast.stsci.edu/tesscut/api/v0.1/astrocut?ra=' \
                             + str(ra) + '&dec=' + str(dec) + '&y=' + str(self.nPixOnSide) + '&x=' + str(self.nPixOnSide) + '&sector=' + str(sector) \
                             + '" --output ' + zipStr
             print(curlStr)
@@ -488,6 +488,7 @@ class tessDiffImage:
 #        print(list(ticCatalog))
 #        print(len(ticCatalog))
         dRa = mas2deg*dt*ticCatalog["pmRA"]/np.cos(ticCatalog["Dec_orig"]*np.pi/180)
+        dRa = np.ma.filled(dRa, np.nan)
         dRa[np.isnan(dRa)] = 0
         dDec = mas2deg*dt*ticCatalog["pmDEC"]
         dDec[np.isnan(dDec)] = 0
