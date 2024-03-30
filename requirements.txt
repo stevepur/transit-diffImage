@@ -1,5 +1,5 @@
 tess-point>=0.8.0
-astropy=5.1
+astropy==5.1
 astroquery
 scipy
 scanf
