@@ -69,7 +69,8 @@ class tessDiffImage:
             maxOrbits = 148,
             cleanFiles = True,
             outputDir = "./",
-            qlpFlagsLocation = None):
+            qlpFlagsLocation = None,
+            overwriteFiles = False):
             
         self.ticData = ticData
         self.nPixOnSide = nPixOnSide
@@ -82,6 +83,7 @@ class tessDiffImage:
         self.outputDir = outputDir
         self.cleanFiles = cleanFiles
         self.qlpFlagsLocation = qlpFlagsLocation
+        self.overwriteFiles = overwriteFiles
 
 
         self.baryCorrector = bc.barycentricCorrection(_spiceFileLocation)
@@ -99,12 +101,13 @@ class tessDiffImage:
             sectorStr = str(self.ticData["sector"])
         else:
             sectorStr = "*"
-        ff = glob.glob(os.path.join(self.outputDir, self.ticName, "imageData_" + planetStr + "_sector" + sectorStr + ".pickle"))
-        if len(ff) > 0:
-            for f in ff:
-                sector = scanf("sector%d.pickle", os.path.basename(f).split("_")[-1])[0]
-                print("Found existing sector " + str(sector) + " file at " + f)
-                sectorList.append(sector)
+        if not self.overwriteFiles:    
+            ff = glob.glob(os.path.join(self.outputDir, self.ticName, "imageData_" + planetStr + "_sector" + sectorStr + ".pickle"))
+            if len(ff) > 0:
+                for f in ff:
+                    sector = scanf("sector%d.pickle", os.path.basename(f).split("_")[-1])[0]
+                    print("Found existing sector " + str(sector) + " file at " + f)
+                    sectorList.append(sector)
         if len(sectorList) > 0:
             self.sectorList = sectorList
             return
