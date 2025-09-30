@@ -15,6 +15,7 @@ from scipy.optimize import minimize
 import tess_stars2px
 import pickle
 from scanf import scanf
+import zipfile
 
 import tess_stars2px as trdp
 import transitDiffImage.barycentricCorrection as bc
@@ -173,7 +174,7 @@ class tessDiffImage:
 
         #       print('rm ' + self.ticName + '/*.fits')
         if self.cleanFiles:
-            os.system('rm ' + os.path.join(self.outputDir, self.ticName, '*.fits'))
+            os.remove(os.path.join(self.outputDir, self.ticName, '*.fits'))
 
     def make_planet_difference_image(self, planetData, pixelData, catalogData, allowedBadCadences = None, drawImages = False):
         if allowedBadCadences is None:
@@ -223,7 +224,7 @@ class tessDiffImage:
         ticName = self.ticName
         dirStr = os.path.join(self.outputDir, ticName)
         if not os.path.exists(dirStr):
-            os.system('mkdir ' + dirStr)
+            os.makedirs(dirStr, exist_ok=True)
         if sector is None:
             zipStr = os.path.join(self.outputDir, ticName + '.zip')
         else:
@@ -239,12 +240,14 @@ class tessDiffImage:
                             + '" --output ' + zipStr
             print(curlStr)
             os.system(curlStr)
-            os.system('unzip ' + zipStr + ' -d ' + dirStr)
+            with zipfile.ZipFile(zipStr, 'r') as zf:
+                zf.extractall(dirStr)
         elif not os.path.exists(dirStr): # check for unexpanded zip file without a directory
-            os.system('unzip ' + zipStr + ' -d ' + dirStr)
-
+            with zipfile.ZipFile(zipStr, 'r') as zf:
+                zf.extractall(dirStr)
+        
         if self.cleanFiles:
-            os.system('rm ' + zipStr)
+            os.remove(zipStr)
         fitsList = glob.glob(os.path.join(self.outputDir, ticName, '*.fits'))
         print(fitsList)
         return fitsList
