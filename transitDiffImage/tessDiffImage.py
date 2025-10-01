@@ -177,7 +177,9 @@ class tessDiffImage:
 
         #       print('rm ' + self.ticName + '/*.fits')
         if self.cleanFiles:
-            os.remove(glob.glob(os.path.join(self.outputDir, self.ticName, '*.fits')))
+            files = glob.glob(os.path.join(self.outputDir, self.ticName, '*.fits'))
+            for file in files:
+                os.remove(file)
 
     def make_planet_difference_image(self, planetData, pixelData, catalogData, allowedBadCadences = None, drawImages = False):
         if allowedBadCadences is None:
