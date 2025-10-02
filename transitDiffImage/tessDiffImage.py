@@ -179,7 +179,10 @@ class tessDiffImage:
         if self.cleanFiles:
             files = glob.glob(os.path.join(self.outputDir, self.ticName, '*.fits'))
             for file in files:
-                os.remove(file)
+                try:
+                    os.remove(file)
+                except PermissionError:
+                    print(f"Could not delete {file}")
 
     def make_planet_difference_image(self, planetData, pixelData, catalogData, allowedBadCadences = None, drawImages = False):
         if allowedBadCadences is None:
@@ -252,7 +255,11 @@ class tessDiffImage:
                 zf.extractall(dirStr)
         
         if self.cleanFiles:
-            os.remove(zipStr)
+            try:
+                os.remove(zipStr)
+            except PermissionError:
+                print(f"Could not delete {zipStr}")
+                
         fitsList = glob.glob(os.path.join(self.outputDir, ticName, '*.fits'))
         print(fitsList)
         return fitsList
