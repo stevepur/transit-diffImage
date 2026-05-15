@@ -101,6 +101,8 @@ def mag2flux(mag):
     return flux12*mag2b(mag)/mag2b(12)
 
 def get_gaia_catalog(tpf, mjd, rdp, supplementalCatalog = None):
+    # the supplemental catalog contains offset in position and magnitude from the target star
+    
     # compute mjd for the Gaia epoch J2016 = 2016-01-01T00:00:00
     t = Time("2016-01-01T00:00:00", format='isot', scale='utc')
     mjdJ2016 = t.mjd
@@ -111,7 +113,7 @@ def get_gaia_catalog(tpf, mjd, rdp, supplementalCatalog = None):
     Gaia.MAIN_GAIA_TABLE = "gaiadr3.gaia_source"
     searchCenter = SkyCoord(ra=tpf.ra, dec=tpf.dec, unit=(u.degree, u.degree), frame='icrs')
     searchRadius = u.Quantity((np.linalg.norm([tpf.shape[1], tpf.shape[2]]))*4/3600/2 , u.deg) # radius in degrees
-    j = Gaia.cone_search_async(searchCenter, searchRadius)
+    j = Gaia.cone_search_async(searchCenter, radius=searchRadius)
     gaiaCatalog = j.get_results()
     
 
@@ -138,18 +140,22 @@ def get_gaia_catalog(tpf, mjd, rdp, supplementalCatalog = None):
         for s in range(len(supplementalCatalog)):
             refStar = supplementalCatalog[s]["referenceStarIndex"]
             newRow = copy.deepcopy(gaiaCatalog[0])
-            for i in range(len(newRow)):
-                newRow[i] = 0
+            # let newRow be initialized to the target star, inheriting proper motion, RUWE etc.
+            # for i in range(len(newRow)):
+            #     newRow[i] = 0
 
             newRow["ra"] = gaiaCatalog[refStar]["ra"] + supplementalCatalog[s]["deltaRaArcsec"]/3600/np.sin(gaiaCatalog[refStar]["dec"]*np.pi/180)
             newRow["dec"] = gaiaCatalog[refStar]["dec"] + supplementalCatalog[s]["deltaDecArcsec"]/3600
             newRow["correctedGaiaRa"] = gaiaCatalog[refStar]["correctedGaiaRa"] + supplementalCatalog[s]["deltaRaArcsec"]/3600/np.sin(gaiaCatalog[refStar]["dec"]*np.pi/180)
             newRow["correctedGaiaDec"] = gaiaCatalog[refStar]["correctedGaiaDec"] + supplementalCatalog[s]["deltaDecArcsec"]/3600
             newRow["source_id"] = supplementalCatalog[s]["source_id"]
-            newRow["phot_g_mean_mag"] = supplementalCatalog[s]["phot_g_mean_mag"]
+            newRow["phot_g_mean_mag"] = gaiaCatalog[refStar]["phot_g_mean_mag"] + supplementalCatalog[s]["deltaGMag"]
             newRow["phot_g_mean_flux"] = mag2flux(newRow["phot_g_mean_mag"])
-            gaiaCatalog.add_row(newRow)
-
+            if supplementalCatalog[s]["rowIndex"] is not None:
+                gaiaCatalog.insert_row(supplementalCatalog[s]["rowIndex"], newRow)
+            else:
+                gaiaCatalog.add_row(newRow)
+            
     # compute the pixel locations of the stars
 #    rdp = raDec2Pix.raDec2PixClass("../raDec2Pix/Kepler-RaDex2Pix/raDec2PixDir")
     [gaiaMod, gaiaOut, gaiaRow, gaiaCol] = rdp.ra_dec_2_pix(gaiaCatalog["correctedGaiaRa"],
@@ -365,8 +371,8 @@ class keplerDiffImage:
         self.diffImageData["meanOutTransitSigma"] = np.sqrt(self.diffImageData["meanOutTransitSigma"])/len(DiffImageDataList)
         self.diffImageData["diffSNRImage"] = self.diffImageData["diffImage"]/self.diffImageData["diffImageSigma"]
 
-        self.inTransitIndices = np.unique(sum(np.array(self.inTransitIndices).tolist(), [])).astype(int)
-        self.outTransitIndices = np.unique(sum(np.array(self.outTransitIndices).tolist(), [])).astype(int)
+        self.inTransitIndices = list(np.unique(np.array([ ll for l in self.inTransitIndices for ll in l])).astype(int))
+        self.outTransitIndices = list(np.unique(np.array([ ll for l in self.outTransitIndices for ll in l])).astype(int))
 
         return self.diffImageData
 

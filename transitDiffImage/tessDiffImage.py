@@ -128,8 +128,14 @@ class tessDiffImage:
                 if orbit1 <= self.maxOrbits:
                     cam = pixelData["camera"]
                     ccd = pixelData["ccd"]
-                    orb1File = f"orbit{orbit1}/orbit{orbit1}cam{cam}ccd{ccd}_qflag.txt"
-                    orb2File = f"orbit{orbit2}/orbit{orbit2}cam{cam}ccd{ccd}_qflag.txt"
+                    if orbit1 < 117:
+                        orb1File = f"orbit{orbit1}/orbit{orbit1}cam{cam}ccd{ccd}_qflag.txt"
+                    else:
+                        orb1File = f"orbit{orbit1}/cam{cam}ccd{ccd}_qflag.txt"
+                    if orbit2 < 117:
+                        orb2File = f"orbit{orbit2}/orbit{orbit2}cam{cam}ccd{ccd}_qflag.txt"
+                    else:
+                        orb2File = f"orbit{orbit2}/cam{cam}ccd{ccd}_qflag.txt"
     #                print(orb1File)
     #                print(orb2File)
                     sectorQflags = np.loadtxt(self.qlpFlagsLocation + orb1File)
@@ -498,6 +504,7 @@ class tessDiffImage:
         ticCatalog["correctedDec"] =  ticCatalog["Dec_orig"] + dDec
 
         targetIndex = np.where(np.array(ticCatalog["ID"]).astype(int)==self.ticData["id"])[0][0]
+        # sometimes the target is not the first entry in ticCatalog, so rearrange ticCatalog to make it the first entry
         if targetIndex > 0:
             targetTable = astropy.table.Table(ticCatalog[targetIndex])
             ticCatalog.remove_row(targetIndex)
@@ -605,7 +612,7 @@ class tessDiffImage:
                 cRow = np.floor(extent[2]-catalogData["extent"][2]).astype(int)
                 # slice operations pick out rows and columns, not x and y
                 pixArray=pixArray[cRow:cRow + cSize,cCol:cCol + cSize]
-        im = ax.imshow(pixArray, cmap='jet', origin="lower", extent=extent)
+        im = ax.imshow(pixArray, cmap='viridis', origin="lower", extent=extent)
         if pixColorBar:
             cbh = plt.colorbar(im, ax=ax)
             cbh.ax.tick_params(labelsize=fs-2)
